@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4"
+    crossorigin="anonymous">
+  <script defer src="https://use.fontawesome.com/releases/v5.0.10/js/all.js" integrity="sha384-slN8GvtUJGnv6ca26v8EzVaR9DC58QEwsIk9q1QXdCU8Yu8ck/tL/5szYlBbqmS+"
+    crossorigin="anonymous"></script>
+
+  <title>Application for JavaScript Developer Role</title>
+  <style>
+    body {
+      padding-top: 20vh;
+      font-family: sans-serif;
+      font-weight: 100;
+      font-size: 10px;
+      letter-spacing: 0.01em;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    h1 {
+      font-size: 5em;
+      margin-bottom: 10vh;
+    }
+
+    #rejection, #congrats {
+      font-size: 3em;
+      max-width: 800px;
+    }
+
+    .btn {
+      font-size: 4em;
+    }
+
+    .main {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      font-size: 4em;
+    }
+
+    .main .form-control,
+    .main .input-group-text,
+    .main .btn {
+      font-size: 1em;
+      margin-left: 5px;
+    }
+
+    #screenForm,
+    #screenForm .input-group {
+      font-size: 3em;
+    }
+
+    #screenForm .btn, .form-control {
+      font-size: 1em;
+    }
+
+    #githubForm,
+    .spinner,
+    #screenForm,
+    #rejection,
+    #congrats {
+      display: none;
+    }
+
+    .spinner {
+      width: 10em;
+      height: 9em;
+      text-align: center;
+      font-size: 2em;
+    }
+
+    .spinner>div {
+      background-color: #333;
+      height: 100%;
+      width: 6px;
+      display: inline-block;
+
+      -webkit-animation: sk-stretchdelay 1.2s infinite ease-in-out;
+      animation: sk-stretchdelay 1.2s infinite ease-in-out;
+    }
+
+    .spinner .rect2 {
+      -webkit-animation-delay: -1.1s;
+      animation-delay: -1.1s;
+    }
+
+    .spinner .rect3 {
+      -webkit-animation-delay: -1.0s;
+      animation-delay: -1.0s;
+    }
+
+    .spinner .rect4 {
+      -webkit-animation-delay: -0.9s;
+      animation-delay: -0.9s;
+    }
+
+    .spinner .rect5 {
+      -webkit-animation-delay: -0.8s;
+      animation-delay: -0.8s;
+    }
+
+    @-webkit-keyframes sk-stretchdelay {
+      0%,
+      40%,
+      100% {
+        -webkit-transform: scaleY(0.4)
+      }
+      20% {
+        -webkit-transform: scaleY(1.0)
+      }
+    }
+
+    @keyframes sk-stretchdelay {
+      0%,
+      40%,
+      100% {
+        transform: scaleY(0.4);
+        -webkit-transform: scaleY(0.4);
+      }
+      20% {
+        transform: scaleY(1.0);
+        -webkit-transform: scaleY(1.0);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Application for JavaScript Developer Role</h1>
+  <input id="join" class="btn btn-dark" type="button" value="Join Camunda" required/>
+  <form id="githubForm">
+    <div class="main input-group">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="basic-addon1">
+          <i class="fab fa-github-alt"></i>
+        </span>
+      </div>
+      <input id="username" type="text" class="form-control" placeholder="Username" required>
+      <button type="submit" class="btn btn-dark">Apply</button>
+    </div>
+  </form>
+  <div id="rejection" class="alert alert-danger" role="alert">
+    I am sorry to inform you that you have not been selected for an interview for this position.
+  </div>
+  <div id="congrats" class="alert alert-primary" role="alert">
+    Welcome to Camunda! 🎈 🙌🏻 🎉
+  </div>
+  <form id="screenForm">
+    <div class="form-group">
+      <label for="answer">Is JavaScript === Java ?</label>
+      <input type="text" class="form-control" id="answer" placeholder="Answer Yes or No" required>
+      </small>
+    </div>
+    <button type="submit" class="btn btn-dark">Submit</button>
+  </form>
+  <div id="loader" class="spinner">
+    <div class="rect1"></div>
+    <div class="rect2"></div>
+    <div class="rect3"></div>
+    <div class="rect4"></div>
+    <div class="rect5"></div>
+  </div>
+  <script>
+    const START_PROCESS = "";
+
+    function post(url, data) {
+      // Default options are marked with *
+      return fetch(url, {
+          body: JSON.stringify(data), // must match 'Content-Type' header
+          cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+          headers: {
+            'content-type': 'application/json'
+          },
+          method: 'POST' // *GET, POST, PUT, DELETE, etc.
+        })
+        .then(response => response.json()) // parses response to JSON
+    }
+
+    const load = () => {
+      loader.style.display = "block";
+    }
+
+    const unload = () => {
+      loader.style.display = "none";
+    }
+
+    const tryJoin = async () => {
+      try {
+        await fetch("/start");
+      } catch (e) {
+        console.log("Couldn't start process");
+      }
+    }
+
+    join.onclick = async (e) => {
+      e.preventDefault();
+      join.style.display = "none";
+      load();
+      await tryJoin();
+      unload();
+      showGithub();
+    }
+
+    // check github
+    function showGithub() {
+      githubForm.style.display = "block";
+      join.style.display = "none";
+    }
+
+    async function checkGithub() {
+      return await post("/github", {
+        username: username.value
+      });
+    }
+
+
+    githubForm.onsubmit = async (e) => {
+      e.preventDefault();
+      githubForm.style.display = "none";
+      load();
+      const accepted = await checkGithub();
+      unload();   
+      accepted ?
+        screenForm.style.display = "block" :
+        rejection.style.display = "block";
+    }
+
+    async function checkScreen() {
+      return await post("/screen", {
+        answer: answer.value
+      });
+    }
+
+    // screen
+    screenForm.onsubmit = async(e) => {
+      e.preventDefault();
+      screenForm.style.display = "none";
+      load();
+      const accepted = await checkScreen();
+      unload();
+      accepted ? 
+        congrats.style.display = "block":
+        rejection.style.display = "block";
+    }
+  </script>
+</body>
+
+</html>
